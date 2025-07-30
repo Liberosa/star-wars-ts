@@ -6,57 +6,38 @@ import {useParams} from "react-router";
 const AboutMe = () => {
     const [hero, setHero] = useState<HeroInfo>();
     const {heroId} = useParams<string>();
-
+    const newHeroId = (heroId && Object.keys(characters).includes(heroId))
+        ? heroId
+        : 'luke';
 
     useEffect(() => {
-        const heroCache = JSON.parse(localStorage.getItem(`${heroId}`)!);
+        const heroCache = JSON.parse(localStorage.getItem(`${newHeroId}`)!);
         if (heroCache && ((Date.now() - heroCache.timestamp) < period_month)) {
             setHero(heroCache.payload);
         } else {
-            if (Object.keys(characters).includes(heroId as string)) {
-                fetch(characters[heroId as keyof typeof characters].url)
-                    .then(response => response.json())
-                    .then(data => {
-                        const info = {
-                            name: data.name,
-                            gender: data.gender,
-                            birth_year: data.birth_year,
-                            height: data.height,
-                            mass: data.mass,
-                            hair_color: data.hair_color,
-                            skin_color: data.skin_color,
-                            eye_color: data.eye_color
-                        }
-                        setHero(info);
-                        localStorage.setItem(`${heroId}`, JSON.stringify({
-                            payload: info,
-                            timestamp: Date.now()
-                        }));
-                    })
-            }
-            if (!heroId) {
-                fetch(characters.luke.url)
-                    .then(response => response.json())
-                    .then(data => {
-                        const info = {
-                            name: data.name,
-                            gender: data.gender,
-                            birth_year: data.birth_year,
-                            height: data.height,
-                            mass: data.mass,
-                            hair_color: data.hair_color,
-                            skin_color: data.skin_color,
-                            eye_color: data.eye_color
-                        }
-                        setHero(info);
-                        localStorage.setItem(`${heroId}`, JSON.stringify({
-                            payload: info,
-                            timestamp: Date.now()
-                        }));
-                    })
-            }
+            fetch(characters[newHeroId as keyof typeof characters].url)
+                .then(response => response.json())
+                .then(data => {
+                    const info = {
+                        name: data.name,
+                        gender: data.gender,
+                        birth_year: data.birth_year,
+                        height: data.height,
+                        mass: data.mass,
+                        hair_color: data.hair_color,
+                        skin_color: data.skin_color,
+                        eye_color: data.eye_color
+                    }
+                    setHero(info);
+                    localStorage.setItem(`${heroId}`, JSON.stringify({
+                        payload: info,
+                        timestamp: Date.now()
+                    }));
+                })
+
+
         }
-    }, [heroId])
+    }, [newHeroId])
 
     return (
         <>
@@ -67,7 +48,7 @@ const AboutMe = () => {
                             className={'text-3xl capitalize'}>{key.replace('_', ' ')}</span>: {hero[key as keyof HeroInfo]}
                     </p>)}
                     {
-                        (!heroId)?<img alt={'Luke'} src={characters.luke.img}/>:<img alt={heroId} src={characters[heroId as keyof typeof characters].img}/>
+                            <img alt={newHeroId} src={characters[newHeroId as keyof typeof characters].img}/>
                     }
 
                 </div>
