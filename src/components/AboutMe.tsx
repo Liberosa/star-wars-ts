@@ -29,7 +29,7 @@ const AboutMe = () => {
                         eye_color: data.eye_color
                     }
                     setHero(info);
-                    localStorage.setItem(`${heroId}`, JSON.stringify({
+                    localStorage.setItem(`${newHeroId}`, JSON.stringify({
                         payload: info,
                         timestamp: Date.now()
                     }));
