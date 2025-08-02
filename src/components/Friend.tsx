@@ -1,18 +1,23 @@
+import {NavLink} from "react-router";
+import {characters, navItems} from "../utils/constants.ts";
+
 interface FriendProps {
-    picture: string,
+    friend: string,
     pos: number
 }
 
-const Friend = ({picture, pos}: FriendProps) => {
+const Friend = ({friend, pos}: FriendProps) => {
     let styles = "w-full ";
-    if(pos === 7) {
+    if (pos === 7) {
         styles += 'rounded-bl-2xl';
     }
-    if(pos === 9) {
+    if (pos === 9) {
         styles += 'rounded-br-2xl';
     }
     return (
-        <img className={styles} src={picture} alt="Friend"/>
+        <NavLink to={`/${navItems[0]}/${friend}`}>
+            <img className={styles} src={characters[friend].img} alt={characters[friend].name}/>
+        </NavLink>
     );
 };
 

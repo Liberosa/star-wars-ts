@@ -8,11 +8,12 @@ import friend7 from "../assets/friend7.jpg";
 import friend8 from "../assets/friend8.jpg";
 import friend9 from "../assets/friend9.jpg";
 import friend0 from "../assets/main.jpg";
+import type {Characters} from "./types";
 
 export const base_url = 'https://sw-info-api.herokuapp.com';
 export const version = '/v1';
 
-export const characters = {
+export const characters:Characters = {
     luke: {
         name: "Luke Skywalker",
         img: friend0,
@@ -64,7 +65,8 @@ export const characters = {
         url: `${base_url+version}/transports/10`
     }
 };
-export const friends = [friend1, friend2, friend3, friend4, friend5, friend6, friend7, friend8, friend9];
+export const defaultHero = 'luke';
+export const friends = Object.keys(characters);
 export const navItems = ['Home', 'About me', 'Star Wars', 'Contact'];
 export const period_month = 30 * 24 * 60 * 60 * 1000;
 export const starWarsInfo = `Star Wars is an American epic space opera media franchise created by George Lucas, which began with the eponymous 1977 film and quickly became a worldwide pop culture phenomenon. The franchise has been expanded into various films and other media, including television series, video games, novels, comic books, theme park attractions, and themed areas, comprising an all-encompassing fictional universe. Star Wars is one of the highest-grossing media franchises of all time.

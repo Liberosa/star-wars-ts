@@ -1,21 +1,25 @@
-import {characters, period_month} from "../utils/constants.ts";
-import {useEffect, useState} from "react";
+import {characters, defaultHero, period_month} from "../utils/constants.ts";
+import {useContext, useEffect, useState} from "react";
 import type {HeroInfo} from "../utils/types";
 import {useParams} from "react-router";
+import {SWContext} from "../utils/context.ts";
+import ErrorPage from "./ErrorPage.tsx";
 
 const AboutMe = () => {
     const [hero, setHero] = useState<HeroInfo>();
-    const {heroId} = useParams<string>();
-    const newHeroId = (heroId && Object.keys(characters).includes(heroId))
-        ? heroId
-        : 'luke';
+    const {heroId = defaultHero} = useParams();
+    const {changeHero} = useContext(SWContext);
 
     useEffect(() => {
-        const heroCache = JSON.parse(localStorage.getItem(`${newHeroId}`)!);
-        if (heroCache && ((Date.now() - heroCache.timestamp) < period_month)) {
-            setHero(heroCache.payload);
+        if (!(heroId in characters)) {
+            return;
+        }
+        changeHero(heroId);
+        const hero = JSON.parse(localStorage.getItem(heroId)!);
+        if (hero && ((Date.now() - hero.timestamp) < period_month)) {
+            setHero(hero.payload);
         } else {
-            fetch(characters[newHeroId as keyof typeof characters].url)
+            fetch(characters[heroId].url)
                 .then(response => response.json())
                 .then(data => {
                     const info = {
@@ -29,17 +33,15 @@ const AboutMe = () => {
                         eye_color: data.eye_color
                     }
                     setHero(info);
-                    localStorage.setItem(`${newHeroId}`, JSON.stringify({
+                    localStorage.setItem(heroId, JSON.stringify({
                         payload: info,
                         timestamp: Date.now()
                     }));
                 })
-
-
         }
-    }, [newHeroId])
+    }, [heroId])
 
-    return (
+    return (heroId in characters) ? (
         <>
             {(!!hero) &&
                 <div className={'text-[2em] text-justify tracking-widest leading-14 ml-8'}>
@@ -47,14 +49,10 @@ const AboutMe = () => {
                         <span
                             className={'text-3xl capitalize'}>{key.replace('_', ' ')}</span>: {hero[key as keyof HeroInfo]}
                     </p>)}
-                    {
-                            <img alt={newHeroId} src={characters[newHeroId as keyof typeof characters].img}/>
-                    }
-
                 </div>
             }
         </>
-    );
+    ) : <ErrorPage/>;
 };
 
 export default AboutMe;
