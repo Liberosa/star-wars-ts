@@ -1,13 +1,14 @@
-import {characters, defaultHero, period_month} from "../utils/constants.ts";
+import {characters, period_month} from "../utils/constants.ts";
 import {useContext, useEffect, useState} from "react";
 import type {HeroInfo} from "../utils/types";
-import {useParams} from "react-router";
-import {SWContext} from "../utils/context.ts";
+
 import ErrorPage from "./ErrorPage.tsx";
+import {useErrorPage} from "../hooks/useErrorPage.tsx";
+import {SWContext} from "../utils/context.ts";
 
 const AboutMe = () => {
     const [hero, setHero] = useState<HeroInfo>();
-    const {heroId = defaultHero} = useParams();
+    const {isError, heroId} = useErrorPage();
     const {changeHero} = useContext(SWContext);
 
     useEffect(() => {
@@ -41,7 +42,7 @@ const AboutMe = () => {
         }
     }, [heroId])
 
-    return (heroId in characters) ? (
+    return (!isError) ? (
         <>
             {(!!hero) &&
                 <div className={'text-[2em] text-justify tracking-widest leading-14 ml-8'}>
