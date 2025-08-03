@@ -1,8 +1,11 @@
 import {useEffect, useState} from "react";
 import {base_url, period_month} from "../utils/constants.ts";
+import {useErrorPage} from "../hooks/useErrorPage.tsx";
+import ErrorPage from "./ErrorPage.tsx";
 
 const Contact = () => {
     const [planets, setPlanets] = useState(['wait...']);
+    const {isError} = useErrorPage();
 
     async function getPlanets() {
         const res = await fetch(`${base_url}/v1/planets`);
@@ -24,7 +27,7 @@ const Contact = () => {
         }
     }, [])
 
-    return (
+    return isError ? <ErrorPage/> : (
         <form className={`w-4/5 my-0 mx-auto rounded-[5px] bg-[#f2f2f2] p-5`} onSubmit={(e) => {
             e.preventDefault();
         }}>
