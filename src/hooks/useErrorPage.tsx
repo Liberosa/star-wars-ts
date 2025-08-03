@@ -3,15 +3,16 @@ import {useParams} from "react-router";
 import {useContext, useEffect} from "react";
 import {SWContext} from "../utils/context.ts";
 
-export  const useErrorPage = () => {
+export const useErrorPage = () => {
     const {heroId = defaultHero} = useParams();
     const {changeHero} = useContext(SWContext);
 
     useEffect(() => {
         if (!(heroId in characters)) {
-            return;
+            changeHero()
+        } else {
+            changeHero(heroId);
         }
-        changeHero(heroId);
     }, [heroId])
 
     return {
